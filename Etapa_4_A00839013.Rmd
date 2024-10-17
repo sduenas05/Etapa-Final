@@ -1,0 +1,713 @@
+---
+title: "Etapa_2_A00839013"
+author: "Juan Pablo Valdes Cardenas"
+date: "2024-09-19"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exploracion de base de datos de los años 2019 y 2024
+
+## Datos 
+```{r}
+M20 = read.csv("Datos_molec_2020.csv")
+M24 = read.csv("Datos_molec_2024.csv")
+```
+
+## Diccionarios
+```{r}
+Dicc20 = read.csv("Diccionario_molec_2020.csv")
+Dicc24 = read.csv("Diccionario_molec_2024.csv")
+```
+
+### Año 2020
+```{r}
+str(M20) # muestra la estructura de la base de datos Mp
+names(M20) # muestra la lista de nombres de las variables
+head(M20) # muestra las primeras 6 filas de la base de datos
+## View(M20) # se mostrará una hoja electrónica aparte con los datos
+dim(M20) # cantidad de registros y columnas
+summary(M20) # verificar de manera general si hay datos faltantes
+sum(is.na(M20[ ,2]) | M20[ ,2] == 0) / length(M20[ ,2]) * 100 # porcentaje de datos faltantes en la variable 
+sum(is.na(M20[, 12])) / length(M20[, 2]) * 100 # el 0 no es considerado un dato faltante
+sum(is.na(M20[, 17])) / length(M20[, 2]) * 100
+sum(is.na(M20[, 11])) / length(M20[, 2]) * 100
+sum(is.na(M20[, 22])) / length(M20[, 2]) * 100
+sum(is.na(M20[ ,13]) | M20[ ,13] == 0) / length(M20[ ,2]) * 100 
+sum(is.na(M20[ ,14]) | M20[ ,14] == 0) / length(M20[ ,2]) * 100
+```
+
+### Año 2024
+```{r}
+str(M24) 
+names(M24) 
+head(M24) 
+## View(M24) 
+dim(M24) 
+summary(M24)
+sum(is.na(M24[ ,2]) | M24[ ,2] == 0 / length(M24[ ,2])) * 100
+sum(is.na(M24[, 12])) / length(M24[, 2]) * 100
+sum(is.na(M24[, 11])) / length(M24[, 2]) * 100
+sum(is.na(M24[, 17])) / length(M24[, 2]) * 100
+sum(is.na(M24[, 22])) / length(M24[, 2]) * 100
+sum(is.na(M24[ ,13]) | M24[ ,13] == 0) / length(M24[ ,2]) * 100
+sum(is.na(M24[ ,14]) | M24[ ,14] == 0) / length(M24[ ,2]) * 100
+```
+
+#### Dimension de los datos
+```{r}
+cat("Dimensión del dataset del año 2020 = ",dim(M20),"\n")
+cat("Dimensión del dataset del año 2024 = ",dim(M24),"\n")
+```
+
+# Describir las variables
+## 1.⁠ ⁠*Entidad (Variable 2)*: Esta variable nos permite identificar la región geográfica o estado en México al que pertenece cada encuestado, lo cual es fundamental para analizar las diferencias entre regiones.
+
+## 2.⁠ ⁠*¿En los últimos doce meses, leyó LIBROS? (Variable 17)*: Esta variable permite medir los hábitos de lectura de libros en la población, un indicador central en el análisis de los hábitos de lectura.
+
+## 3.⁠ ⁠*¿Cuántos libros leyó en los últimos doce meses? (Variable 22)*: Proporciona una medida cuantitativa de los hábitos de lectura, lo que facilita la comparación entre regiones.
+
+## 4. *¿Hasta que año o grado aprobó en la escuela? (Variable 13)*:Esta variable proporciona el nivel educativo máximo alcanzado por el encuestado. Es clave para entender cómo el nivel de escolaridad influye en otros aspectos de su vida, como los hábitos de lectura. 
+
+## 5. *Edad (Variable 11)*: Esta variable proporciona el rango de edad de la gente encuestada. Esta variable es importante para entender que edades son mas lectoras. 
+
+## 6. *Condición de actividad (Variable 14)*: Esta variable nos indica si la persona estuvo ocupada laboralmente, desempleada, o dedicada a otras actividades. Es un factor socioeconómico que podría influir en los hábitos de lectura.
+
+# Dataframe de las variantes del año 2019 y 2024
+```{r}
+M20final = M20[, c(2, 12, 17, 22, 13, 14, 11)]
+M20final = na.omit(M20final) # Eliminar filas con NA en las columnas seleccionadas
+M20final # Verificar los datos limpios
+
+M24final = M24[, c(2, 12, 17, 22, 13, 14, 11)]
+M24final = na.omit(M24final) 
+M24final 
+
+summary(M20final)
+summary(M24final)
+
+cat("Nueva dimensión del dataset del año 2020 solo de las variables necesitadas = ",dim(M20final),"\n")
+cat("Nueva dimensión del dataset del año 2024 solo de las variables necesitadas = ",dim(M24final),"\n")
+```
+
+# Tipo de Variable 
+## Cualitativo
+### 2
+```{r}
+cat("2020", "\n")
+Proporción_categoria__20 = prop.table(table(M20final$entidad))
+Proporción_categoria__20
+
+cat("------------------------------------------------------------------------------------------------------------------------------", "\n")
+cat("2024", "\n")
+Proporción_categoria__24 = prop.table(table(M24final$entidad))
+Proporción_categoria__24
+
+hist(M20final$entidad,col="green1", main = "ENTIDAD FEDERATIVA")
+hist(M24final$entidad,col="green4", main = "ENTIDAD FEDERATIVA")
+```
+
+### 14
+```{r}
+cat("2020", "\n")
+Proporción_categoria___20 = prop.table(table(M20final$cond_act))
+Proporción_categoria___20
+
+cat("--------------------------------------", "\n")
+cat("2024", "\n")
+
+Proporción_categoria_24 = prop.table(table(M24final$cond_act))
+Proporción_categoria_24
+
+hist(M20final$cond_act,col="darkslategray", main = "CONDICIÓN DE ACTIIVIDAD 2020")
+hist(M24final$cond_act,col="darkslategray2", main = "CONDICIÓN DE ACTIIVIDAD 2024")
+```
+
+### 17 
+```{r}
+mediana____20 = median(M20final$p3_1)
+Proporción_categoria____20 = prop.table(table(M20final$p3_1))
+cat("Mediana año 2020 = ", mediana____20, "\n")
+Proporción_categoria____20
+
+cat("--------------------------------------", "\n")
+
+mediana____24 = median(M24final$p3_1)
+Proporción_categoria____24 = prop.table(table(M24final$p3_1))
+cat("Mediana año 2024 = ", mediana____24, "\n")
+Proporción_categoria____24
+
+pie(table(M20final$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "2020")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(M24final$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "2024")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+```
+
+
+### 13
+```{r}
+cat("NIVEL", "\n")
+cat("2020", "\n")
+Proporción_categoria______20 = prop.table(table(M20final$nivel))
+Proporción_categoria______20
+
+cat("--------------------------------------", "\n")
+cat("2024", "\n")
+
+Proporción_categoria______24 = prop.table(table(M24final$nivel))
+Proporción_categoria______24
+
+cat("AÑ0", "\n")
+cat("2020", "\n")
+Proporción_categoria______20 = prop.table(table(M20final$anio))
+Proporción_categoria______20
+
+cat("--------------------------------------", "\n")
+cat("2024", "\n")
+
+Proporción_categoria______24 = prop.table(table(M24final$anio))
+Proporción_categoria______24
+
+pie(table(M20final$anio),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black"), 
+    main = "2020") 
+legend("topright", 
+       legend = c("1 = PREESCOLAR", 
+                  "2 = PRIMARIA", 
+                  "3 = SECUNDARIA", 
+                  "4 = PREPARATORIA", 
+                  "5 = BASICA", 
+                  "6 = CARRERA"),
+        fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black"),
+       cex = 0.8,) 
+
+pie(table(M24final$anio),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black"), main = "2024")
+legend("topright", 
+       legend = c("1 = PREESCOLAR", 
+                  "2 = PRIMARIA", 
+                  "3 = SECUNDARIA", 
+                  "4 = PREPARATORIA", 
+                  "5 = BASICA", 
+                  "6 = CARRERA", 
+                  "7 = PROFESIONAL",
+                  "9 = DOCTORADO"), 
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black", "darkorchid3"),
+       cex = 0.8,) 
+```
+
+## Cuantitiativo
+### 22
+```{r}
+library("e1071") # Necesitas instalar previamente esta biblioteca
+
+# M20final$p4
+media20 = mean(M20final$p4)
+mediana20 = median(M20final$p4)
+ds20 = sd(M20final$p4)
+sesgo20 = skewness(M20final$p4)
+curtosis20 = kurtosis(M20final$p4)
+
+cat("Media del año 2020 = ", media20, "\n")
+cat("Mediana del año 2020 =", mediana20, "\n")
+cat("Desviación Estándar del año 2020 = ", ds20, "\n")
+cat("El sesgo del año del 2020 =", sesgo20, "\n")
+cat("La curtosis del año 2020 =", curtosis20, "\n")
+
+cat("--------------------------------------", "\n")
+
+# M24final$p4
+media24 = mean(M24final$p4)
+mediana24 = median(M24final$p4)
+ds24 = sd(M24final$p4)
+sesgo24 = skewness(M24final$p4)
+curtosis24 = kurtosis(M24final$p4)
+
+cat("Media del año 2024 = ", media24, "\n")
+cat("Mediana del año 2024 =", mediana24, "\n")
+cat("Desviación Estándar del año 2024 =", ds24, "\n")
+cat("El sesgo del año del 2024 =", sesgo24, "\n")
+cat("La curtosis del año 2024 =", curtosis24, "\n")
+```
+## Grafica de todos los datos. 
+```{r}
+boxplot(M20final$p4, M24final$p4, col = c("orange", "green"), main = "¿CUÁNTOS LIBROS LEYÓ EN LOS ÚLTIMOS DOCE MESES?", xlab = "AÑO", ylab = "NÚMERO DE LIBROS LEÍDOS", names = c("2020", "2024"), border = "black", lwd = 1.5) 
+```
+
+### 11
+```{r}
+library("e1071") # Necesitas instalar previamente esta biblioteca
+
+# M20final$p4
+media_20 = mean(M20final$edad)
+mediana_20 = median(M20final$edad)
+ds_20 = sd(M20final$edad)
+sesgo_20 = skewness(M20final$edad)
+curtosis_20 = kurtosis(M20final$edad)
+
+cat("Media del año 2020 = ", media_20, "\n")
+cat("Mediana del año 2020 =", mediana_20, "\n")
+cat("Desviación Estándar del año 2020 = ", ds_20, "\n")
+cat("El sesgo del año del 2020 =", sesgo_20, "\n")
+cat("La curtosis del año 2020 =", curtosis_20, "\n")
+
+cat("--------------------------------------", "\n")
+
+# M24final$p4
+media_24 = mean(M24final$edad)
+mediana_24 = median(M24final$edad)
+ds_24 = sd(M24final$edad)
+sesgo_24 = skewness(M24final$edad)
+curtosis_24 = kurtosis(M24final$edad)
+
+cat("Media del año 2024 = ", media_24, "\n")
+cat("Mediana del año 2024 =", mediana_24, "\n")
+cat("Desviación Estándar del año 2024 =", ds_24, "\n")
+cat("El sesgo del año del 2024 =", sesgo_24, "\n")
+cat("La curtosis del año 2024 =", curtosis_24, "\n")
+```
+
+```{r}
+boxplot(M20final$edad, M24final$edad, col = c("orange", "lightblue"), main = "RANGO DE EDAD", xlab = "AÑO", ylab = "EDAD", names = c("2020", "2024"), border = "black", lwd = 1.5) 
+```
+
+# Intervalos de confianza
+```{r}
+
+# Estados en el Norte: Baja California, Baja California Sur, Chihuahua, Coahuila, Durango, Nuevo León, Sinaloa, Sonora y Tamaulipas.
+
+# Estados del Centro: Aguascalientes, Colima, Ciudad de Mexcio, Guanajuato, Hidalgo, Jalisco, Estado de Mexico, Michoacan de Ocampo, Morelos, Nayarit, Queretaro, San Luis Potosi, Tlaxcala, Zacatecas. 
+
+# Estados del Sur: Campeche, Chiapas, Guerrero, Oaxaca, Puebla, Quintana Roo, Tabasco, Veracruz y Yucatán
+
+# Año 2020
+Norte20 = subset(M20final, M20final$entidad %in% c(2,3,5,8,10,19,25,26,28))
+Centro20 = subset(M20final, M20final$entidad %in% c(1,6,9,11,13,14,15,16,17,18,22,24,29,32))
+Sur20 = subset(M20final, M20final$entidad %in% c(4,7,12,20,21,23,27,30,31))
+
+# Año 2024
+Norte24 = subset(M24final, M24final$entidad %in% c(2,3,5,8,10,19,25,26,28))
+Centro24 = subset(M24final, M24final$entidad %in% c(1,6,9,11,13,14,15,16,17,18,22,24,29,32))
+Sur24 = subset(M24final, M24final$entidad %in% c(4,7,12,20,21,23,27,30,31))
+```
+
+## Variable 22
+```{r}
+cat("-----------------VARIABLE 22 [2020 2024]-----------------", "\n\n")
+
+# Nivel de confianza y valor crítico
+conf_level = 0.96
+z_value = qnorm(1 - (1 - conf_level) / 2)
+
+# 1. Comparación para el Norte (2020 vs 2024)
+norte_diff = mean(Norte20$p4) - mean(Norte24$p4)
+sd_norte20 = sd(Norte20$p4)
+sd_norte24 = sd(Norte24$p4)
+n_norte20 = length(Norte20$p4)
+n_norte24 = length(Norte24$p4)
+se_diff_norte = sqrt((sd_norte20^2 / n_norte20) + (sd_norte24^2 / n_norte24))
+lower_norte = norte_diff - z_value * se_diff_norte
+upper_norte = norte_diff + z_value * se_diff_norte
+
+cat("La diferencia de media en el NORTE es =",se_diff_norte,"\n\n" )
+cat("Intervalo de confianza = NORTE", "[", lower_norte, "a", upper_norte,"]", "\n\n")
+
+# 2. Comparación para el Centro (2020 vs 2024)
+centro_diff = mean(Centro20$p4) - mean(Centro24$p4)
+sd_centro20 = sd(Centro20$p4)
+sd_centro24 = sd(Centro24$p4)
+n_centro20 = length(Centro20$p4)
+n_centro24 = length(Centro24$p4)
+se_diff_centro = sqrt((sd_centro20^2 / n_centro20) + (sd_centro24^2 / n_centro24))
+lower_centro = centro_diff - z_value * se_diff_centro
+upper_centro = centro_diff + z_value * se_diff_centro
+
+cat("La diferencia de media en el CENTRO es =",se_diff_centro,"\n\n" )
+cat("Intervalo de confianza = CENTRO", "[", lower_centro, "a", upper_centro,"]", "\n\n")
+
+# 3. Comparación para el Sur (2020 vs 2024)
+sur_diff = mean(Sur20$p4) - mean(Sur24$p4)
+sd_sur20 = sd(Sur20$p4)
+sd_sur24 = sd(Sur24$p4)
+n_sur20 = length(Sur20$p4)
+n_sur24 = length(Sur24$p4)
+se_diff_sur = sqrt((sd_sur20^2 / n_sur20) + (sd_sur24^2 / n_sur24))
+lower_sur = sur_diff - z_value * se_diff_sur
+upper_sur = sur_diff + z_value * se_diff_sur
+
+cat("La diferencia de media en el SUR es =",se_diff_sur,"\n\n" )
+cat("Intervalo de confianza = SUR", "[", lower_sur, "a", upper_sur, "]","\n\n")
+
+# Grafica 
+
+plot(NA, ylim=c(0, 2 + 1), xlim=c(-1, 1), yaxt="n", ylab="", 
+     main = "¿Cuántos libros leyó en los últimos doce meses?", xlab = "CANTIDAD DE LIBROS LEIDOS")
+axis(2, at=c(1), labels=c("SUR"))
+arrows(lower_sur, 1, upper_sur, 1, angle=90, code=3, length=0.1, lwd=2, col="lightblue")
+points(se_diff_sur, 1, pch=19, cex=1.5, col="black")
+
+axis(2, at=c(2), labels=c("CENTRO"))
+arrows(lower_centro, 2, upper_centro, 2, angle=90, code=3, length=0.1, lwd=2, col="lightgreen")
+points(se_diff_centro, 2, pch=19, cex=1.5, col="black")
+
+axis(2, at=c(3), labels=c("NORTE"))
+arrows(lower_norte, 3, upper_norte, 3, angle=90, code=3, length=0.1, lwd=2, col="orange")
+points(se_diff_norte, 3, pch=19, cex=1.5, col="black")
+```
+# Pruebas de hipótesis
+## Variable 22
+```{r}
+cat("-----------------VARIABLE 22-----------------", "\n\n")
+
+# 4. Prueba de hipótesis para el Norte (p4)
+norte_test_p4 = t.test(Norte20$p4, Norte24$p4, conf.level = 0.96)
+cat("Prueba de hipótesis para el Norte (p4):\n")
+print(norte_test_p4)
+
+# 5. Prueba de hipótesis para el Centro (p4)
+centro_test_p4 = t.test(Centro20$p4, Centro24$p4, conf.level = 0.96)
+cat("Prueba de hipótesis para el Centro (p4):\n")
+print(centro_test_p4)
+
+# 6. Prueba de hipótesis para el Sur (p4)
+sur_test_p4 = t.test(Sur20$p4, Sur24$p4, conf.level = 0.96)
+cat("Prueba de hipótesis para el Sur (p4):\n")
+print(sur_test_p4)
+```
+
+## Variable 17
+```{r}
+cat("-----------------VARIABLE 17 [2020 2024]-----------------", "\n\n")
+
+# Nivel de confianza y valor crítico
+conf_level = 0.96
+z_value = qnorm(1 - (1 - conf_level) / 2)
+
+# 1. Comparación para el Norte (2020 vs 2024) usando p3_1
+table(Norte20$p3_1)
+table(Norte24$p3_1)
+
+prop.table(table(Norte20$p3_1))
+prop.table(table(Norte24$p3_1))
+
+norte_diff_p3_1 = mean(Norte20$p3_1) - mean(Norte24$p3_1)
+sd_norte20_p3_1 = sd(Norte20$p3_1)
+sd_norte24_p3_1 = sd(Norte24$p3_1)
+n_norte20_p3_1 = length(Norte20$p3_1)
+n_norte24_p3_1 = length(Norte24$p3_1)
+se_diff_norte_p3_1 = sqrt((sd_norte20_p3_1^2 / n_norte20_p3_1) + (sd_norte24_p3_1^2 / n_norte24_p3_1))
+lower_norte_p3_1 = norte_diff_p3_1 - z_value * se_diff_norte_p3_1
+upper_norte_p3_1 = norte_diff_p3_1 + z_value * se_diff_norte_p3_1
+
+cat("La diferencia de media en el NORTE es =",se_diff_norte_p3_1,"\n\n" )
+cat("Intervalo de confianza = NORTE", "[", lower_norte_p3_1, "a", upper_norte_p3_1,"]", "\n\n")
+
+# 2. Comparación para el Centro (2020 vs 2024) usando p3_1
+table(Centro20$p3_1)
+table(Centro24$p3_1)
+
+prop.table(table(Centro20$p3_1))
+prop.table(table(Centro24$p3_1))
+
+centro_diff_p3_1 = mean(Centro20$p3_1) - mean(Centro24$p3_1)
+sd_centro20_p3_1 = sd(Centro20$p3_1)
+sd_centro24_p3_1 = sd(Centro24$p3_1)
+n_centro20_p3_1 = length(Centro20$p3_1)
+n_centro24_p3_1 = length(Centro24$p3_1)
+se_diff_centro_p3_1 = sqrt((sd_centro20_p3_1^2 / n_centro20_p3_1) + (sd_centro24_p3_1^2 / n_centro24_p3_1))
+lower_centro_p3_1 = centro_diff_p3_1 - z_value * se_diff_centro_p3_1
+upper_centro_p3_1 = centro_diff_p3_1 + z_value * se_diff_centro_p3_1
+
+cat("La diferencia de media en el CENTRO es =",se_diff_centro_p3_1,"\n\n" )
+cat("Intervalo de confianza = CENTRO", "[", lower_centro_p3_1, "a", upper_centro_p3_1,"]", "\n\n")
+
+# 3. Comparación para el Sur (2020 vs 2024) usando p3_1
+table(Sur20$p3_1)
+table(Sur24$p3_1)
+
+prop.table(table(Sur20$p3_1))
+prop.table(table(Sur24$p3_1))
+
+sur_diff_p3_1 = mean(Sur20$p3_1) - mean(Sur24$p3_1)
+sd_sur20_p3_1 = sd(Sur20$p3_1)
+sd_sur24_p3_1 = sd(Sur24$p3_1)
+n_sur20_p3_1 = length(Sur20$p3_1)
+n_sur24_p3_1 = length(Sur24$p3_1)
+se_diff_sur_p3_1 = sqrt((sd_sur20_p3_1^2 / n_sur20_p3_1) + (sd_sur24_p3_1^2 / n_sur24_p3_1))
+lower_sur_p3_1 = sur_diff_p3_1 - z_value * se_diff_sur_p3_1
+upper_sur_p3_1 = sur_diff_p3_1 + z_value * se_diff_sur_p3_1
+
+cat("La diferencia de media en el SUR es =",se_diff_sur_p3_1,"\n\n" )
+cat("Intervalo de confianza = SUR", "[", lower_sur_p3_1, "a", upper_sur_p3_1,"]", "\n\n")
+
+# Grafica
+
+pie(table(Norte20$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? NORTE 2020")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(Norte24$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? NORTE 2024")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(Centro20$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? CENTRO 2020")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(Centro24$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? CENTRO 2024")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(Sur20$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? SUR 2020")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+
+pie(table(Sur24$p3_1),col = c("yellow", "deepskyblue1", "springgreen4"), main = "¿En los últimos doce meses, leyó LIBRS? SUR 2024")
+legend("topright", 
+       legend = c("0 = NA", 
+                  "1 = SI", 
+                  "2 = NO"),
+        fill = c("yellow", "deepskyblue2", "springgreen3"),
+       cex = 0.8,)
+```
+
+# Pruebas de hipótesis
+## Variable 17
+```{r}
+cat("-----------------VARIABLE 17-----------------", "\n\n")
+
+# 1. Prueba de hipótesis para el Norte (p3_1)
+norte_test_p3_1 = t.test(Norte20$p3_1, Norte24$p3_1, conf.level = 0.96)
+cat("Prueba de hipótesis para el Norte (p3_1):\n")
+print(norte_test_p3_1)
+
+# 2. Prueba de hipótesis para el Centro (p3_1)
+centro_test_p3_1 = t.test(Centro20$p3_1, Centro24$p3_1, conf.level = 0.96)
+cat("Prueba de hipótesis para el Centro (p3_1):\n")
+print(centro_test_p3_1)
+
+# 3. Prueba de hipótesis para el Sur (p3_1)
+sur_test_p3_1 = t.test(Sur20$p3_1, Sur24$p3_1, conf.level = 0.96)
+cat("Prueba de hipótesis para el Sur (p3_1):\n")
+print(sur_test_p3_1)
+```
+
+## Variable 14
+```{r}
+cat("-----------------VARIABLE 14 [2020 2024]-----------------", "\n\n")
+
+# Nivel de confianza y valor crítico
+conf_level = 0.96
+z_value = qnorm(1 - (1 - conf_level) / 2)
+
+# 1. Comparación para el Norte (2020 vs 2024) usando cond_act
+table(Norte20$cond_act)
+table(Norte24$cond_act)
+
+prop.table(table(Norte20$cond_act))
+prop.table(table(Norte24$cond_act))
+
+norte_diff_cond_act = mean(Norte20$cond_act) - mean(Norte24$cond_act)
+sd_norte20_cond_act = sd(Norte20$cond_act)
+sd_norte24_cond_act = sd(Norte24$cond_act)
+n_norte20_cond_act = length(Norte20$cond_act)
+n_norte24_cond_act = length(Norte24$cond_act)
+se_diff_norte_cond_act = sqrt((sd_norte20_cond_act^2 / n_norte20_cond_act) + (sd_norte24_cond_act^2 / n_norte24_cond_act))
+lower_norte_cond_act = norte_diff_cond_act - z_value * se_diff_norte_cond_act
+upper_norte_cond_act = norte_diff_cond_act + z_value * se_diff_norte_cond_act
+
+cat("La diferencia de media en el NORTE es =",se_diff_norte_cond_act,"\n\n" )
+cat("Intervalo de confianza NORTE=", "[", lower_norte_cond_act, "a", upper_norte_cond_act, "]","\n\n")
+
+# 2. Comparación para el Centro (2020 vs 2024) usando cond_act
+table(Centro20$cond_act)
+table(Centro24$cond_act)
+
+prop.table(table(Centro20$cond_act))
+prop.table(table(Centro24$cond_act))
+
+centro_diff_cond_act = mean(Centro20$cond_act) - mean(Centro24$cond_act)
+sd_centro20_cond_act = sd(Centro20$cond_act)
+sd_centro24_cond_act = sd(Centro24$cond_act)
+n_centro20_cond_act = length(Centro20$cond_act)
+n_centro24_cond_act = length(Centro24$cond_act)
+se_diff_centro_cond_act = sqrt((sd_centro20_cond_act^2 / n_centro20_cond_act) + (sd_centro24_cond_act^2 / n_centro24_cond_act))
+lower_centro_cond_act = centro_diff_cond_act - z_value * se_diff_centro_cond_act
+upper_centro_cond_act = centro_diff_cond_act + z_value * se_diff_centro_cond_act
+
+cat("La diferencia de media en el CENTRO es =",se_diff_centro_cond_act,"\n\n" )
+cat("Intervalo de confianza CENTRO=", "[", lower_centro_cond_act, "a", upper_centro_cond_act,"]", "\n\n")
+
+# 3. Comparación para el Sur (2020 vs 2024) usando cond_act
+table(Sur20$cond_act)
+table(Sur24$cond_act)
+
+prop.table(table(Sur20$cond_act))
+prop.table(table(Sur24$cond_act))
+
+sur_diff_cond_act = mean(Sur20$cond_act) - mean(Sur24$cond_act)
+sd_sur20_cond_act = sd(Sur20$cond_act)
+sd_sur24_cond_act = sd(Sur24$cond_act)
+n_sur20_cond_act = length(Sur20$cond_act)
+n_sur24_cond_act = length(Sur24$cond_act)
+se_diff_sur_cond_act = sqrt((sd_sur20_cond_act^2 / n_sur20_cond_act) + (sd_sur24_cond_act^2 / n_sur24_cond_act))
+lower_sur_cond_act = sur_diff_cond_act - z_value * se_diff_sur_cond_act
+upper_sur_cond_act = sur_diff_cond_act + z_value * se_diff_sur_cond_act
+
+cat("La diferencia de media en el SUR es =",se_diff_sur_cond_act,"\n\n" )
+cat("Intervalo de confianza SUR=", "[", lower_sur_cond_act, "a", upper_sur_cond_act,"]", "\n\n")
+
+# Grafica 
+
+pie(table(Norte20$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2"), main = "Condición de actividad. NORTE 2020")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2"),
+       cex = 0.5)
+
+pie(table(Norte24$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"), main = "Condición de actividad. NORTE 2024")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"),
+       cex = 0.5)
+
+pie(table(Centro20$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"), main = "Condición de actividad. CENTRO 2020")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2"),
+       cex = 0.5)
+
+pie(table(Centro24$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"), main = "Condición de actividad. CENTRO 2024")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"),
+       cex = 0.5)
+
+pie(table(Sur20$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2" ,"sienna3"), main = "Condición de actividad. SUR 2020")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"),
+       cex = 0.5)
+
+pie(table(Sur24$cond_act),col = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"), main = "Condición de actividad. SUR 2024")
+legend(-2.3, 0.5, 
+       legend = c("1 = Trabajo para obtener ingresos", 
+                  "2 = Trabajo sin pago (negocio familiar)", 
+                  "3 = No trabajo pero Tenia trabajo", 
+                  "4 = En busca de trabajo", 
+                  "5 = Espera de aceptacion para el trabajo", 
+                  "6 = Es estudiante", 
+                  "7 = Se dedica a oficios del hogar",
+                  "8 = Es jubilado",
+                  "9 = Es incapacitado",
+                  "10 = Otra Situacion",
+                  "99 = No especifico"),
+       fill = c("yellow", "deepskyblue2", "springgreen3", "steelblue4", "tomato1", "orange2", "black","darkorchid3", "chartreuse2", "deeppink2", "sienna3"),
+       cex = 0.5)
+```
+
+# Pruebas de hipótesis
+## Variable 14
+```{r}
+cat("-----------------VARIABLE 14-----------------", "\n\n")
+
+# 1. Prueba de hipótesis para el Norte (cond_act)
+norte_test = t.test(Norte20$cond_act, Norte24$cond_act, conf.level = 0.96)
+cat("Prueba de hipótesis para el Norte:\n")
+print(norte_test)
+
+# 2. Prueba de hipótesis para el Centro (cond_act)
+centro_test = t.test(Centro20$cond_act, Centro24$cond_act, conf.level = 0.96)
+cat("Prueba de hipótesis para el Centro:\n")
+print(centro_test)
+
+# 3. Prueba de hipótesis para el Sur (cond_act)
+sur_test = t.test(Sur20$cond_act, Sur24$cond_act, conf.level = 0.96)
+cat("Prueba de hipótesis para el Sur:\n")
+print(sur_test)
+```
